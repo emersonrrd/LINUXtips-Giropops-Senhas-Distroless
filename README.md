@@ -21,3 +21,7 @@ docker push emersonrrd/linuxtips-giropops-senhas-distroless:1.0
 
 docker rm redis-distroless -f
 docker rm giropops-senhas-distroless -f
+
+
+
+docker container logs giropops-senhas-distroless 
