@@ -1,14 +1,14 @@
-FROM cgr.dev/chainguard/python:latest-dev AS build
-ADD . /app
+FROM cgr.dev/chainguard/python:latest-dev as builder
 WORKDIR /app
-RUN pip install -r requirements.txt
-RUN pip install importlib-metadata
+COPY . .
+RUN pip install --no-cache-dir -r requirements.txt --user
 
-FROM gcr.io/distroless/python3
-COPY --from=build /app /app
-COPY --from=build /home/nonroot/.local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
-ENV PYTHONPATH=/usr/local/lib/python3.12/site-packages \
-                FLASK_APP=/app/app.py
+FROM cgr.dev/chainguard/python:latest
 WORKDIR /app
-EXPOSE 5000
-ENTRYPOINT python -m flask run --host=0.0.0.0
+COPY --from=builder /home/nonroot/.local/lib/python3.12/site-packages /home/nonroot/.local/lib/python3.12/site-packages
+COPY --from=builder /home/nonroot/.local/bin  /home/nonroot/.local/bin
+COPY --from=builder /app .
+ENV PATH=$PATH:/home/nonroot/.local/bin \
+        FLASK_APP=/app/app.py
+
+ENTRYPOINT [ "python", "/app/app.py" ]

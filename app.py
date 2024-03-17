@@ -76,4 +76,5 @@ if __name__ == '__main__':
     import logging
     logging.basicConfig(filename='error.log', level=logging.DEBUG)
     start_http_server(8088)
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run(host="0.0.0.0", port=int("5000"), debug=True)
